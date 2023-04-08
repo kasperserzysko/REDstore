@@ -1,13 +1,11 @@
 package com.kasperserzysko.security;
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
+@ComponentScan(basePackages = {"com.kasperserzysko.data",
+        "com.kasperserzysko.security",
+        "com.kasperserzysko.tools"})
 public class SecurityApplication {
-
-    public static void main(String[] args) {
-        SpringApplication.run(SecurityApplication.class, args);
-    }
-
 }

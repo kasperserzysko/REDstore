@@ -4,11 +4,16 @@ import com.kasperserzysko.data.models.enums.Genre;
 import com.kasperserzysko.data.models.enums.Role;
 import com.kasperserzysko.data.models.enums.Tag;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Setter
+@Getter
 public class Game {
 
     @Id
@@ -18,6 +23,8 @@ public class Game {
     private String title;
     private String description;
     private float price;
+    private LocalDate releaseDate;
+    private float rating = 0;
 
     @ElementCollection(targetClass = Tag.class)
     @JoinTable(name = "games_tags", joinColumns = @JoinColumn(name = "game_id"))
@@ -31,6 +38,7 @@ public class Game {
     @Enumerated(EnumType.STRING)
     private Set<Genre> genres = new HashSet<>();
 
-
+    @OneToMany(mappedBy = "game")
+    private Set<GameRating> ratings = new HashSet<>();
 
 }
