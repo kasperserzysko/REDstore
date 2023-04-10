@@ -9,6 +9,7 @@ public class Mapper implements IMapper{
 
     private final UserMapper userMapper;
     private final GameMapper gameMapper;
+    private final RatingMapper ratingMapper;
 
     @Override
     public UserMapper getUserMapper() {
@@ -18,5 +19,10 @@ public class Mapper implements IMapper{
     @Override
     public GameMapper getGameMapper() {
         return gameMapper;
+    }
+
+    @Override
+    public RatingMapper getRatingMapper() {
+        return ratingMapper;
     }
 }

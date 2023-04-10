@@ -5,10 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter
@@ -22,6 +19,7 @@ public class User {
     private String email;
     private String password;
 
+    private String activationLink = UUID.randomUUID().toString();
     private boolean isEnabled = false;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)

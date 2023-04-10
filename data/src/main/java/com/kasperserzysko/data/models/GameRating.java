@@ -1,10 +1,14 @@
 package com.kasperserzysko.data.models;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Entity
+@Setter
+@Getter
 public class GameRating {
 
     @Id
@@ -13,7 +17,7 @@ public class GameRating {
 
     private String comment;
     private int rating;
-    private LocalDate date;
+    private LocalDate date = LocalDate.now();
 
     @ManyToOne
     private Game game;

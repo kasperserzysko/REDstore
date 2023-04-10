@@ -5,16 +5,21 @@ import com.kasperserzysko.data.models.enums.Role;
 import com.kasperserzysko.data.models.enums.Tag;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Setter
 @Getter
-public class Game {
+@NoArgsConstructor
+public class Game{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +29,6 @@ public class Game {
     private String description;
     private float price;
     private LocalDate releaseDate;
-    private float rating = 0;
 
     @ElementCollection(targetClass = Tag.class)
     @JoinTable(name = "games_tags", joinColumns = @JoinColumn(name = "game_id"))
@@ -39,6 +43,6 @@ public class Game {
     private Set<Genre> genres = new HashSet<>();
 
     @OneToMany(mappedBy = "game")
-    private Set<GameRating> ratings = new HashSet<>();
+    private List<GameRating> ratings = new ArrayList<>();
 
 }

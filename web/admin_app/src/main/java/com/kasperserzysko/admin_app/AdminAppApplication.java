@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -17,7 +18,8 @@ import java.util.List;
 @ComponentScan(basePackages = {"com.kasperserzysko.admin_app",
         "com.kasperserzysko.security",
         "com.kasperserzysko.data",
-        "com.kasperserzysko.web"})
+        "com.kasperserzysko.web"
+        })
 @RequiredArgsConstructor
 public class AdminAppApplication implements CommandLineRunner {
 

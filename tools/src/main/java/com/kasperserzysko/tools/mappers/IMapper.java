@@ -4,4 +4,5 @@ public interface IMapper {
 
     UserMapper getUserMapper();
     GameMapper getGameMapper();
+    RatingMapper getRatingMapper();
 }

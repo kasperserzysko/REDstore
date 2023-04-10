@@ -7,12 +7,13 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Set;
 
 @Data
 @NoArgsConstructor
-public class GameCredentialsDto {
+public class GameCredentialsDto implements Serializable {
 
     @NotNull(message = "Field: title can't be null")
     @NotBlank(message = "Field: title can't be blank")
@@ -29,4 +30,6 @@ public class GameCredentialsDto {
 
     @NotNull(message = "Field: genres can't be null")
     private Set<Genre> genres;
+
+    private float rating;
 }

@@ -2,10 +2,11 @@ package com.kasperserzysko.admin_app.controllers;
 
 import com.kasperserzysko.contracts.game_dtos.GameCredentialsDto;
 import com.kasperserzysko.tools.exceptions.NotFoundException;
-import com.kasperserzysko.web.services.GameService;
+import com.kasperserzysko.web.services.interfaces.IGameService;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,25 +21,30 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GameController {
 
-    private final GameService gameService;
+    private final IGameService gameService;
 
 
     @PostMapping
-    public ResponseEntity<?> saveMovie(@RequestPart("game") GameCredentialsDto dto, @RequestPart("images")MultipartFile[] images, @RequestPart("titleImage") MultipartFile titleImage) throws IOException {
+    public ResponseEntity<?> saveGame(@RequestPart("game") GameCredentialsDto dto, @RequestPart("images")MultipartFile[] images, @RequestPart("titleImage") MultipartFile titleImage) throws IOException {
         gameService.createGame(dto, images, titleImage);
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
-    public ResponseEntity<GameCredentialsDto> getMovieUpdateCredentials(@PathVariable("id") Long id) throws NotFoundException {
+    public ResponseEntity<GameCredentialsDto> getGameUpdateCredentials(@PathVariable("id") Long id) throws NotFoundException {
         return ResponseEntity.ok(gameService.getGameUpdateCredentials(id));
     }
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateMovie(@RequestBody GameCredentialsDto dto, @PathVariable("id") Long id) throws NotFoundException, IOException {
+    public ResponseEntity<?> updateGame(@RequestBody GameCredentialsDto dto, @PathVariable("id") Long id) throws NotFoundException, IOException {
         gameService.updateGame(dto, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteGame(@PathVariable("id") Long id) throws NotFoundException, IOException {
+        gameService.deleteGame(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 
 

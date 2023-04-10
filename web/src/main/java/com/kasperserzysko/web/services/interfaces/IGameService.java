@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface IGameService {
 
     void createGame(GameCredentialsDto dto, MultipartFile[] images, MultipartFile titleImage) throws IOException;
-    void deleteGame(Long id);
+    void deleteGame(Long id) throws NotFoundException, IOException;
     GameCredentialsDto getGame(Long id) throws NotFoundException;
     List<GameDto> getGames(Optional<Float> priceMax,
                            Optional<Float> priceMin,
