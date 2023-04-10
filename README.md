@@ -22,12 +22,6 @@
     - for Client app: <a href="https://drive.google.com/file/d/19BUKR1YdD5RtjD_XQbpDV8gtjZimL-zO/view?usp=share_link">client_documentation</a>
     - for Admin app: <a href="https://drive.google.com/file/d/1Smd2KxDuzZANx8o0O-aYzlHEbZt82Bsm/view?usp=share_link">admin_documentation</a>
     
-  * Application is multi-module:
-    - cache: 
-        - contains cache settings,
-    - contracts:
-        - dtos
-    -
     
 ## How To Use
 
