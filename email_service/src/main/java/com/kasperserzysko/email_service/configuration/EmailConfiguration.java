@@ -14,6 +14,7 @@ public class EmailConfiguration {
 
     private static final String EMAIL_USERNAME = "redstoreemailservice@gmail.com";
     private static final String EMAIL_PASSWORD = "qqeimbwbawrknxyt";
+
     @Bean
     public JavaMailSender mailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();

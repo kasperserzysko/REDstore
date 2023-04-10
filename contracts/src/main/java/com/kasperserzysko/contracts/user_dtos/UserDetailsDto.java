@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class UserCredentialsDto {
+public class UserDetailsDto {
 
     @NotNull(message = "Field: email can't be null!")
     @Email(message = "Field must be an email!")

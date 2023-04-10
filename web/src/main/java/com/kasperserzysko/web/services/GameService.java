@@ -1,7 +1,8 @@
 package com.kasperserzysko.web.services;
 
-import com.kasperserzysko.contracts.game_dtos.GameCredentialsDto;
+import com.kasperserzysko.contracts.game_dtos.GameDetailsDto;
 import com.kasperserzysko.contracts.game_dtos.GameDto;
+import com.kasperserzysko.contracts.game_dtos.GameRatingDto;
 import com.kasperserzysko.data.models.Game;
 import com.kasperserzysko.data.models.enums.Genre;
 import com.kasperserzysko.data.models.enums.Tag;
@@ -40,17 +41,14 @@ public class GameService implements IGameService {
     private final RatingRepository ratingRepository;
 
     @Override
-    public void createGame(GameCredentialsDto dto, MultipartFile[] images, MultipartFile titleImage) throws IOException {
+    public void createGame(GameDetailsDto dto, MultipartFile image) throws IOException {
         var gameEntity = new Game();
 
         mapper.getGameMapper()
                 .mapToEntity.accept(dto, gameEntity);
         gameRepository.save(gameEntity);
 
-        FileService.saveTitleImage(titleImage, gameEntity.getId());
-        for (MultipartFile image : images) {
-            FileService.saveImage(image, gameEntity.getId());
-        }
+        FileService.saveImage(image, gameEntity.getId());
     }
 
     @CacheEvict(value = "gameCredentialsCache", key = "#id")
@@ -63,25 +61,25 @@ public class GameService implements IGameService {
         gameRepository.delete(gameEntity);
     }
 
-    //TODO ADD IMAGE UPLOAD FOR IMAGE TITLE AND IMAGE LIST
+    @Override
+    public byte[] getImage(Long gameId) throws IOException {
+        return FileService.getImage(gameId);
+    }
 
     @Cacheable(value = "gameCredentialsCache", key = "#id")
     @Override
-    public GameCredentialsDto getGame(Long id) throws NotFoundException {
+    public GameDetailsDto getGame(Long id) throws NotFoundException {
         log.info("GAME FROM DB");
-        var dto = mapper
+        return mapper
                 .getGameMapper()
-                .mapToCredentials
+                .mapToDetails
                 .apply(gameRepository
                         .findById(id)
                         .orElseThrow(() -> new NotFoundException("Couldn't find game with id: " + id))
                 );
-        dto.setRating(ratingRepository.getRatingAvg(id));
-        return dto;
     }
 
 
-    @Cacheable("gameDtosCache")
     @Override
     public List<GameDto> getGames(Optional<Float> priceMax,
                                   Optional<Float> priceMin,
@@ -106,13 +104,12 @@ public class GameService implements IGameService {
                 .map(mapper
                         .getGameMapper()
                         .mapToDto)
-                .peek(dto -> dto.setRating(ratingRepository.getRatingAvg(dto.getId())))
                 .toList();
     }
 
     @CachePut(value = "gameCredentialsCache", key = "#gameId")
     @Override
-    public void updateGame(GameCredentialsDto dto, Long gameId) throws IOException, NotFoundException {
+    public void updateGame(GameDetailsDto dto, Long gameId) throws NotFoundException {
         var gameEntity = gameRepository
                 .findById(gameId)
                 .orElseThrow(() -> new NotFoundException("Couldn't find game with id: " + gameId));
@@ -121,16 +118,23 @@ public class GameService implements IGameService {
     }
 
     @Override
-    public GameCredentialsDto getGameUpdateCredentials(Long gameId) throws NotFoundException {
+    public GameDetailsDto getGameUpdateCredentials(Long gameId) throws NotFoundException {
         return mapper
                 .getGameMapper()
-                .mapToCredentials
+                .mapToDetails
                 .apply(gameRepository
-                .findById(gameId)
-                .orElseThrow(() -> new NotFoundException("Couldn't find game with id: " + gameId))
+                    .findById(gameId)
+                    .orElseThrow(() -> new NotFoundException("Couldn't find game with id: " + gameId))
                 );
     }
 
+    @Override
+    public GameRatingDto getGameRating(Long gameId) throws NotFoundException {
+        gameRepository
+                .findById(gameId)
+                .orElseThrow(() -> new NotFoundException("Couldn't find game with id: " + gameId));
+        return new GameRatingDto(ratingRepository.getRatingAvg(gameId));
+    }
     private Sort sort(Optional<String> sort, Optional<String> direction){
         Sort.Direction dir = Sort.Direction.DESC;
         String sortBy = "releaseDate";

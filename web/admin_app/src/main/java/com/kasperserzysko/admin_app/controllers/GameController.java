@@ -1,12 +1,12 @@
 package com.kasperserzysko.admin_app.controllers;
 
-import com.kasperserzysko.contracts.game_dtos.GameCredentialsDto;
+import com.kasperserzysko.contracts.game_dtos.GameDetailsDto;
 import com.kasperserzysko.tools.exceptions.NotFoundException;
 import com.kasperserzysko.web.services.interfaces.IGameService;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,22 +24,26 @@ public class GameController {
     private final IGameService gameService;
 
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
-    public ResponseEntity<?> saveGame(@RequestPart("game") GameCredentialsDto dto, @RequestPart("images")MultipartFile[] images, @RequestPart("titleImage") MultipartFile titleImage) throws IOException {
-        gameService.createGame(dto, images, titleImage);
+    public ResponseEntity<?> saveGame(@RequestPart("game") GameDetailsDto dto, @RequestPart("image") MultipartFile image) throws IOException {
+        gameService.createGame(dto, image);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<GameCredentialsDto> getGameUpdateCredentials(@PathVariable("id") Long id) throws NotFoundException {
+    public ResponseEntity<GameDetailsDto> getGameUpdateCredentials(@PathVariable("id") Long id) throws NotFoundException {
         return ResponseEntity.ok(gameService.getGameUpdateCredentials(id));
     }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateGame(@RequestBody GameCredentialsDto dto, @PathVariable("id") Long id) throws NotFoundException, IOException {
+    public ResponseEntity<?> updateGame(@RequestBody GameDetailsDto dto, @PathVariable("id") Long id) throws NotFoundException, IOException {
         gameService.updateGame(dto, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteGame(@PathVariable("id") Long id) throws NotFoundException, IOException {
         gameService.deleteGame(id);
@@ -68,5 +72,10 @@ public class GameController {
         return ex.getConstraintViolations()
                 .stream()
                 .map(ConstraintViolation::getMessage).toList();
+    }
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(ExpiredJwtException.class)
+    public String handleExpiredJwtException() {
+        return "Session finished! Log in again.";
     }
 }

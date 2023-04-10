@@ -7,7 +7,7 @@ import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Arrays;
+import java.util.List;
 
 
 @Configuration
@@ -17,9 +17,8 @@ public class CacheConfig {
     @Bean
     public CacheManager cacheManager() {
         var cacheManager = new SimpleCacheManager();
-        cacheManager.setCaches(Arrays.asList(
-                new ConcurrentMapCache("gameCredentialsCache"),
-                new ConcurrentMapCache("gameDtosCache")));
+        cacheManager.setCaches(List.of(
+                new ConcurrentMapCache("gameCredentialsCache")));
         return cacheManager;
     }
 }

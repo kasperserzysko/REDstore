@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-public class GameCredentialsDto implements Serializable {
+public class GameDetailsDto implements Serializable {
 
     @NotNull(message = "Field: title can't be null")
     @NotBlank(message = "Field: title can't be blank")
@@ -30,6 +30,4 @@ public class GameCredentialsDto implements Serializable {
 
     @NotNull(message = "Field: genres can't be null")
     private Set<Genre> genres;
-
-    private float rating;
 }

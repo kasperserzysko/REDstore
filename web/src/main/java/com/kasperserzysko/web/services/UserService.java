@@ -1,6 +1,6 @@
 package com.kasperserzysko.web.services;
 
-import com.kasperserzysko.contracts.rating_dtos.RateCreateDto;
+import com.kasperserzysko.contracts.rating_dtos.RatingDetailsDto;
 import com.kasperserzysko.data.models.GameRating;
 import com.kasperserzysko.data.repositories.GameRepository;
 import com.kasperserzysko.data.repositories.RatingRepository;
@@ -28,7 +28,7 @@ public class UserService implements IUserService {
     private final IMapper mapper;
 
     @Override
-    public void rateGame(RateCreateDto dto, Long gameId, SecurityUser loggedUser) throws NotFoundException, FoundException {
+    public void rateGame(RatingDetailsDto dto, Long gameId, SecurityUser loggedUser) throws NotFoundException, FoundException {
         var userEntity = loggedUser.user();
         if (ratingRepository.findByUser_IdAndGame_Id(userEntity.getId(), gameId).isPresent()){
             throw new FoundException("You've already rated this game!");
@@ -52,4 +52,7 @@ public class UserService implements IUserService {
 
         ratingRepository.save(ratingEntity);
     }
+
+
+
 }

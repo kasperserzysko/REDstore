@@ -1,6 +1,6 @@
 package com.kasperserzysko.security.services;
 
-import com.kasperserzysko.contracts.user_dtos.UserCredentialsDto;
+import com.kasperserzysko.contracts.user_dtos.UserDetailsDto;
 import com.kasperserzysko.data.models.Token;
 import com.kasperserzysko.data.models.User;
 import com.kasperserzysko.data.models.enums.Role;
@@ -38,7 +38,7 @@ public class AuthenticationService implements IAuthenticationService {
     private final TokenRepository tokenRepository;
 
     @Override
-    public void registerUser(UserCredentialsDto dto, Role role) throws FoundException {
+    public void registerUser(UserDetailsDto dto, Role role) throws FoundException {
         if (userRepository.findUserByEmail(dto.getEmail()).isPresent()){
             throw new FoundException("That email already exist!");
         }
@@ -62,7 +62,7 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     @Override
-    public String login(UserCredentialsDto dto) throws AuthenticationException {
+    public String login(UserDetailsDto dto) throws AuthenticationException {
         var userEntity = userRepository.findUserByEmail(dto.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("Email not found!"));
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));

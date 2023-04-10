@@ -1,9 +1,10 @@
 package com.kasperserzysko.client_app.controllers;
 
-import com.kasperserzysko.contracts.game_dtos.GameCredentialsDto;
+import com.kasperserzysko.contracts.game_dtos.GameDetailsDto;
 import com.kasperserzysko.contracts.game_dtos.GameDto;
-import com.kasperserzysko.contracts.rating_dtos.RateCreateDto;
+import com.kasperserzysko.contracts.game_dtos.GameRatingDto;
 import com.kasperserzysko.contracts.rating_dtos.RatingDetailsDto;
+import com.kasperserzysko.contracts.rating_dtos.RatingDto;
 import com.kasperserzysko.data.models.enums.Genre;
 import com.kasperserzysko.data.models.enums.Tag;
 import com.kasperserzysko.security.models.SecurityUser;
@@ -12,18 +13,20 @@ import com.kasperserzysko.tools.exceptions.NotFoundException;
 import com.kasperserzysko.web.services.interfaces.IGameService;
 import com.kasperserzysko.web.services.interfaces.IRatingService;
 import com.kasperserzysko.web.services.interfaces.IUserService;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
@@ -41,8 +44,12 @@ public class GameController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<GameCredentialsDto> getGame(@PathVariable("id") Long gameId) throws NotFoundException {
+    public ResponseEntity<GameDetailsDto> getGame(@PathVariable("id") Long gameId) throws NotFoundException {
         return ResponseEntity.ok(gameService.getGame(gameId));
+    }
+    @GetMapping("/{id}/rating")
+    public ResponseEntity<GameRatingDto> getGameRating(@PathVariable("id") Long gameId) throws NotFoundException {
+        return ResponseEntity.ok(gameService.getGameRating(gameId));
     }
 
     @GetMapping
@@ -58,22 +65,35 @@ public class GameController {
                                                   @Param("dir") Optional<String> dir){
         return ResponseEntity.ok(gameService.getGames(priceMax, priceMin, title, dateMax, dateMin, tags, genres, page, sort, dir));
     }
+    @GetMapping("/{id}/image")
+    public ResponseEntity<byte[]> getImage(@PathVariable("id") Long id) throws IOException {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(gameService.getImage(id));
+    }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/{id}/rate")
-    public ResponseEntity<?> rateGame(@PathVariable("id") Long gameId, @RequestBody RateCreateDto dto, @AuthenticationPrincipal SecurityUser loggedUser) throws NotFoundException, FoundException {
+    public ResponseEntity<?> rateGame(@PathVariable("id") Long gameId, @RequestBody RatingDetailsDto dto, @AuthenticationPrincipal SecurityUser loggedUser) throws NotFoundException, FoundException {
         userService.rateGame(dto, gameId, loggedUser);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/{id}/rate")
-    public ResponseEntity<List<RatingDetailsDto>> getRatings(@PathVariable("id") Long gameId, @Param("page") Optional<Integer> page){
+    public ResponseEntity<List<RatingDto>> getRatings(@PathVariable("id") Long gameId, @Param("page") Optional<Integer> page){
         return ResponseEntity.ok(ratingService.getRatings(gameId, page));
     }
 
 
 
     //
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(ExpiredJwtException.class)
+    public String handleExpiredJwtException() {
+        return "Session finished! Log in again.";
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(FoundException.class)
     public String handleFoundException(FoundException ex){

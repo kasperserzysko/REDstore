@@ -1,6 +1,6 @@
 package com.kasperserzysko.client_app.controllers;
 
-import com.kasperserzysko.contracts.user_dtos.UserCredentialsDto;
+import com.kasperserzysko.contracts.user_dtos.UserDetailsDto;
 import com.kasperserzysko.data.models.enums.Role;
 import com.kasperserzysko.security.services.interfaces.IAuthenticationService;
 import com.kasperserzysko.tools.exceptions.FoundException;
@@ -23,13 +23,13 @@ public class UserController {
     private final IAuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody UserCredentialsDto dto) throws FoundException {
+    public ResponseEntity<?> registerUser(@RequestBody UserDetailsDto dto) throws FoundException {
         authenticationService.registerUser(dto, Role.ROLE_USER);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody UserCredentialsDto dto){
+    public ResponseEntity<String> loginUser(@RequestBody UserDetailsDto dto){
         return ResponseEntity.ok(authenticationService.login(dto));
     }
 
@@ -38,6 +38,7 @@ public class UserController {
         authenticationService.activate(activationLink);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 
     //
     @ResponseStatus(HttpStatus.BAD_REQUEST)

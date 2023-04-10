@@ -1,6 +1,6 @@
 package com.kasperserzysko.tools.mappers;
 
-import com.kasperserzysko.contracts.game_dtos.GameCredentialsDto;
+import com.kasperserzysko.contracts.game_dtos.GameDetailsDto;
 import com.kasperserzysko.contracts.game_dtos.GameDto;
 import com.kasperserzysko.data.models.Game;
 import com.kasperserzysko.tools.Validator;
@@ -20,7 +20,7 @@ public class GameMapper {
 
     private final DateTimeFormatter europeanDateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
-    public final BiConsumer<GameCredentialsDto, Game> mapToEntity = (dto, game) ->{
+    public final BiConsumer<GameDetailsDto, Game> mapToEntity = (dto, game) ->{
         validator.validate(dto);
           game.setTitle(dto.getTitle());
           game.setDescription(dto.getDescription());
@@ -30,8 +30,8 @@ public class GameMapper {
           game.setGenres(dto.getGenres());
     };
 
-    public final Function<Game, GameCredentialsDto> mapToCredentials = game -> {
-        var dto = new GameCredentialsDto();
+    public final Function<Game, GameDetailsDto> mapToDetails = game -> {
+        var dto = new GameDetailsDto();
         dto.setTitle(game.getTitle());
         dto.setDescription(game.getDescription());
         dto.setReleaseDate(game.getReleaseDate().format(europeanDateFormatter));
@@ -48,5 +48,7 @@ public class GameMapper {
         dto.setTitle(game.getTitle());
         return dto;
     };
+
+
 }
 

@@ -1,6 +1,6 @@
 package com.kasperserzysko.admin_app.controllers;
 
-import com.kasperserzysko.contracts.user_dtos.UserCredentialsDto;
+import com.kasperserzysko.contracts.user_dtos.UserDetailsDto;
 import com.kasperserzysko.data.models.enums.Role;
 import com.kasperserzysko.security.services.interfaces.IAuthenticationService;
 import com.kasperserzysko.tools.exceptions.FoundException;
@@ -23,12 +23,12 @@ public class UserController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/register")
-    public ResponseEntity<?> registerAdmin(@RequestBody UserCredentialsDto dto) throws FoundException {
+    public ResponseEntity<?> registerAdmin(@RequestBody UserDetailsDto dto) throws FoundException {
         authenticationService.registerUser(dto, Role.ROLE_ADMIN);
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserCredentialsDto dto){
+    public ResponseEntity<String> login(@RequestBody UserDetailsDto dto){
         return ResponseEntity.ok(authenticationService.login(dto));
     }
 
