@@ -4,7 +4,7 @@ import com.kasperserzysko.contracts.rating_dtos.RatingDetailsDto;
 import com.kasperserzysko.security.models.SecurityUser;
 import com.kasperserzysko.tools.exceptions.NotFoundException;
 import com.kasperserzysko.tools.exceptions.PermissionDeniedException;
-import com.kasperserzysko.web.services.RatingService;
+import com.kasperserzysko.web.services.interfaces.IRatingService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RatingController {
 
-    private final RatingService ratingService;
+    private final IRatingService ratingService;
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
@@ -71,5 +71,9 @@ public class RatingController {
         return "Couldn't activate account!";
     }
 
-
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(PermissionDeniedException.class)
+    public String handlePermissionDeniedException(PermissionDeniedException ex) {
+        return ex.getMessage();
+    }
 }

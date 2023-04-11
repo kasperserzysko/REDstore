@@ -8,7 +8,8 @@ import org.springframework.context.annotation.ComponentScan;
         "com.kasperserzysko.cache",
         "com.kasperserzysko.web",
         "com.kasperserzysko.tools",
-        "com.kasperserzysko.data"
+        "com.kasperserzysko.data",
+        "com.kasperserzysko.cache"
         })
 public class WebApplication {
 

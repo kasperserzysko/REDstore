@@ -96,7 +96,6 @@ public class GameService implements IGameService {
         final int ITEMS_PER_PAGE = 10;
         final Pageable gamesPage = page.map(p -> PageRequest.of(p, ITEMS_PER_PAGE,sort(sort, direction)))
                                     .orElseGet(() ->  PageRequest.of(0, ITEMS_PER_PAGE, sort(sort, direction)));
-        log.info("GAMES FROM DB");
         return gameRepository
                 .findAll(Specification.allOf(gameSpecifications), gamesPage)
                 .getContent()

@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -60,6 +61,11 @@ public class UserController {
         return "Couldn't activate account!";
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public String handleUsernameNotFoundException(UsernameNotFoundException ex) {
+        return ex.getMessage();
+    }
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(DisabledException.class)
     public String handleDisabledExceptions(DisabledException ex){

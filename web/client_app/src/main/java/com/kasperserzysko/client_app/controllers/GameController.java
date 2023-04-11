@@ -94,6 +94,12 @@ public class GameController {
         return "Session finished! Log in again.";
     }
 
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(IOException.class)
+    public String handleIOException() {
+        return "Couldn't load an image";
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(FoundException.class)
     public String handleFoundException(FoundException ex){
