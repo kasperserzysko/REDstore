@@ -12,6 +12,8 @@
 * Spring email
 * Lombok
 * Cache
+* JUnit 5
+* Mockito
 
 ## Documentation:
   Application has 2 different ports for client and admin:
