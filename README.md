@@ -1,6 +1,6 @@
 <h1 align="center">REDstore </h1>
 
-<h4 align="center">A Backend REST application made for CD Project RED </h4>
+<h4 align="center">A Backend REST application</h4>
 
 
 ## Technologies
